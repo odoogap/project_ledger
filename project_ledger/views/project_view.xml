@@ -1,13 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="hr_timesheet_line_tree_ledger" model="ir.ui.view">
-        <field name="name">account.analytic.line.view.tree.with.user</field>
-        <field name="model">account.analytic.line</field>
-        <field name="inherit_id" ref="hr_timesheet.hr_timesheet_line_tree"/>
+    <!-- Ledger Lines -->
+    <!-- Tree View Ledger Lines -->
+    <record id="ledger_lines_tree" model="ir.ui.view">
+        <field name="name">project.ledger.line.tree</field>
+        <field name="model">project.ledger.line</field>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='date']" position="after">
-                <field name="so_line" domain="[('project_id', '=', project_id), ('qty_delivered_method', '=', 'analytic')]"/>
+            <tree string="Ledger Lines" editable="top">
+                <field name="date"/>
+                <field name="name"/>
+                <field name="ref"/>
+                <field name="unit_amount"/>
+                <field name="amount"/>
+                <field name="project_id" invisible="1"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="company_id" invisible="1"/>
+                <field name="ledger_id" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Search View Ledger Lines -->
+    <record id="ledger_lines_search" model="ir.ui.view">
+        <field name="name">project.ledger.line.search</field>
+        <field name="model">project.ledger.line</field>
+        <field name="arch" type="xml">
+            <search string="Ledger Lines">
+                <field name="name"/>
+                <group col="8" colspan="4" expand="0" string="Group By">
+                    <filter name="group_by_month" string="Date (month)" domain="[]"
+                            context="{'group_by':'date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Form View Ledger Lines -->
+    <record id="ledger_lines_form" model="ir.ui.view">
+        <field name="name">project.ledger.line.form</field>
+        <field name="model">project.ledger.line</field>
+        <field name="arch" type="xml">
+            <form string="Ledger Lines">
+                <header></header>
+                <sheet>
+                    <group>
+                        <field name="date"/>
+                        <field name="ref"/>
+                        <field name="name"/>
+                        <field name="unit_amount"/>
+                        <field name="amount"/>
+                        <field name="project_id" invisible="1"/>
+                        <field name="currency_id" invisible="1"/>
+                        <field name="company_id" invisible="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="project_edit_project_view_form_inherit_project_ledger" model="ir.ui.view">
+        <field name="name">project.form.inherit.project.ledger</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button
+                        class="oe_stat_button"
+                        type="object"
+                        string="Ledger Lines"
+                        name="action_open_ledger"
+                        icon="fa-play">
+                </button>
+            </div>
+        </field>
+    </record>
+
+    <record id="project_project_view_kanban_inherit_project_ledger" model="ir.ui.view">
+        <field name="name">project.project.kanban.inherit.project.ledger</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.view_project_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('o_project_kanban_boxes')]" position="inside">
+                <a class="o_project_kanban_box o_project_ledger_box"
+                   name="action_open_ledger" type="object">
+                    <div>
+                        <span class="o_label">Ledger Lines</span>
+                    </div>
+                </a>
             </xpath>
         </field>
     </record>
+
 </odoo>

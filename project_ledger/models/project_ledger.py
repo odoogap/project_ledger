@@ -4,9 +4,43 @@ from odoo import api, fields, models, _
 
 
 class AccountAnalyticLine(models.Model):
+    _inherit = 'project.project'
+
+    def action_open_ledger(self):
+        self.ensure_one()
+        ledger_id = self.env.ref('project_ledger.project_ledger_default').id
+        return {
+            'name': 'Ledger Lines - %s' % self.display_name,
+            'type': 'ir.actions.act_window',
+            'view_id': self.env.ref('project_ledger.ledger_lines_tree').id,
+            'view_mode': 'tree',
+            'res_model': 'project.ledger.line',
+            'context': {'default_project_id': self.id, 'default_ledger_id': ledger_id},
+            'domain': [('project_id', '=', self.id), ('ledger_id', '=', ledger_id)],
+        }
+
+
+class ProjectLedger(models.Model):
+    _name = 'project.ledger'
+    _description = 'Ledger Type'
+
+    name = fields.Char('Name', required=True)
+
+
+class ProjectLedgerLine(models.Model):
     _name = 'project.ledger.line'
     _description = 'Ledger Line'
     _order = 'date desc, id desc'
+
+    def write(self, vals):
+        if not vals.get('ledger_id'):
+            vals.update({'ledger_id': self._default_ledger})
+        res = super(ProjectLedgerLine, self).write(vals)
+        return res
+
+    @api.model
+    def _default_ledger(self):
+        return self.env.context.get('ledger_id', self.env.ref('project_ledger.project_ledger_default').id)
 
     @api.model
     def _default_user(self):
@@ -18,6 +52,7 @@ class AccountAnalyticLine(models.Model):
     date = fields.Date('Date', required=True, index=True, default=fields.Date.context_today)
     amount = fields.Monetary('Amount', required=True, default=0.0)
     product_id = fields.Many2one('product.product', string='Product', domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
+    ledger_id = fields.Many2one('project.ledger', string='Ledger Type', required=True, default=_default_ledger)
     unit_amount = fields.Float('Quantity', default=0.0)
     product_uom_id = fields.Many2one('uom.uom', string='Unit of Measure', domain="[('category_id', '=', product_uom_category_id)]")
     product_uom_category_id = fields.Many2one(related='product_uom_id.category_id', readonly=True)

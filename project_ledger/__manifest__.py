@@ -13,6 +13,8 @@ Third Party Ledger Management
     'images' : [],
     'depends' : ['project', 'hr_timesheet', 'sale_management'],
     'data': [
+        'security/ir.model.access.csv',
+        'data/ledger_data.xml',
         'views/project_view.xml',
     ],
     'demo': [
