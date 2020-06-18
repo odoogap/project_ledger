@@ -20,6 +20,15 @@ class AccountAnalyticLine(models.Model):
         }
 
 
+class ProjectLedgerTag(models.Model):
+    _name = 'project.ledger.tag'
+    _description = 'Ledger Tag'
+
+    name = fields.Char('Name', required=True)
+    project_id = fields.Many2one('project.project', 'Project', help="In case this type is specific")
+    note = fields.Html('Notes')
+
+
 class ProjectLedger(models.Model):
     _name = 'project.ledger'
     _description = 'Ledger Type'
@@ -59,5 +68,6 @@ class ProjectLedgerLine(models.Model):
     project_id = fields.Many2one('project.project', 'Project', required=True, ondelete='restrict', index=True, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
     partner_id = fields.Many2one('res.partner', string='Partner', domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
     user_id = fields.Many2one('res.users', string='User', default=_default_user)
+    tag_ids = fields.Many2many('project.ledger.tag', 'ledger_line_tag_rel', 'line_id', 'tag_id', string='Tags')
     company_id = fields.Many2one('res.company', string='Company', required=True, readonly=True, default=lambda self: self.env.company)
     currency_id = fields.Many2one(related="company_id.currency_id", string="Currency", readonly=True, store=True, compute_sudo=True)
