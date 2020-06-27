@@ -13,6 +13,8 @@ Project Roles
     'images': [],
     'depends': ['project'],
     'data': [
+        'security/ir.model.access.csv',
+        'views/project_role_view.xml'
     ],
     'demo': [
     ],

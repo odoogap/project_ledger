@@ -5,11 +5,11 @@ from odoo import api, fields, models, _
 
 class ProjectRole(models.Model):
     _name = 'project.role'
-    _description = 'Ledger Tag'
+    _description = 'Project Role'
 
     name = fields.Char('Role', required=True)
     project_id = fields.Many2one('project.project', 'Project', help="In case this type is specific")
-    partner_id = fields.Many2one('res.partner', string='Partner', domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
+    partner_id = fields.Many2one('res.partner', string='Partner')
 
 
 class ResPartner(models.Model):

@@ -2,4 +2,53 @@
 <odoo>
 
 
+    <!--
+        Partner form
+    -->
+
+    <record id="view_partner_property_form" model="ir.ui.view">
+        <field name="name">res.partner.property.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="priority">2</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <page name="sales_purchases" position="after">
+                <page string="Project Roles" name="project_role" groups="project.group_project_user">
+                    <group>
+                        <field name="role_ids" nolabel="1" colspan="4">
+                            <tree string="Role" editable="bottom">
+                                <field name="partner_id" invisible="1"/>
+                                <field name="name"/>
+                                <field name="project_id"/>
+                            </tree>
+                        </field>
+                    </group>
+                </page>
+            </page>
+        </field>
+    </record>
+
+    <!--
+        Project form
+    -->
+    <record id="project_project_view_form" model="ir.ui.view">
+        <field name="name">project.project.form.inherit</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='emails']" position="after">
+                <page name="project_role" string="Roles">
+                    <group>
+                        <field name="role_ids" nolabel="1" colspan="4">
+                            <tree string="Role" editable="bottom">
+                                <field name="project_id" invisible="1"/>
+                                <field name="name"/>
+                                <field name="partner_id"/>
+                            </tree>
+                        </field>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
 </odoo>
